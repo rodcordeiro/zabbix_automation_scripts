@@ -11,7 +11,7 @@ systemctl restart zabbix-agent.service
 3. Include the template on zabbix host and wait for 1m for updating.
 > Reference [https://share.zabbix.com/operating-systems/linux/linux-service-monitoring-using-systemctl](https://share.zabbix.com/operating-systems/linux/linux-service-monitoring-using-systemctl)
 
-## Monitor Hyper-V
+## Monitoring Hyper-V
 1. Import the template XML file using the Zabbix Templates Import feature.
 
 1. Create 2 folders in zabbix agent folder, `scripts\` and `zabbix_agentd.conf.d\` and copy the files `hyperv_host.ps1` to scripts\ and `hyperv_host.conf` to zabbix_agentd.conf.d\  
