@@ -11,6 +11,7 @@ function Get-LatestUpdate {
     return $LastInstalledUpdate.Date
 }
 
+
 function Test-PendingReboot {
     if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $True }
     if (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $True }
