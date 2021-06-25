@@ -22,7 +22,14 @@
                 "comandos"=>array("download file","create file","what else")
             )
         ),
-        "linux"=>array()
+        "linux"=>array(
+            array(
+                "id"=>000,
+                "desc"=>"Criando script de atualização",
+                "comandos"=>array("download file","create file","what else")
+            ),
+            
+        )
     ));
     echo $updates;
  } else {

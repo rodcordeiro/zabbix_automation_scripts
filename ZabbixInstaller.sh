@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+custom_files_repository="https://rodcordeiro.github.io/shares/files/zabbix"
+
+
 # Identificar gerenciador de pacotes
 declare -A osInfo;
 osInfo[/etc/redhat-release]=yum
@@ -25,8 +28,8 @@ dnf_pkg_installer(){
     systemctl enable zabbix-agent.service
     systemctl start zabbix-agent.service
 
-    wget -c https://rodcordeiro.github.io/shares/files/zabbix/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
-    wget -c https://raw.githubusercontent.com/catonrug/zabbix_agentd.d/master/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
+    wget -c $custom_files_repository/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
+    wget -c $custom_files_repository/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
     
     systemctl restart zabbix-agent.service
 
@@ -44,8 +47,8 @@ apt_pkg_installer(){
     systemctl enable zabbix-agent.service
     systemctl start zabbix-agent.service
 
-    wget -c https://rodcordeiro.github.io/shares/files/zabbix/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
-    wget -c https://raw.githubusercontent.com/catonrug/zabbix_agentd.d/master/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
+    wget -c $custom_files_repository/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
+    wget -c $custom_files_repository/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
     
     systemctl restart zabbix-agent.service
 
@@ -61,12 +64,14 @@ zypper_pkg_installer(){
     systemctl enable zabbix-agent.service
     systemctl start zabbix-agent.service
 
-    wget -c https://rodcordeiro.github.io/shares/files/zabbix/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
-    wget -c https://raw.githubusercontent.com/catonrug/zabbix_agentd.d/master/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
+    wget -c $custom_files_repository/zabbix_agentd.linux.conf -O /etc/zabbix/conf/zabbix_agentd/zabbix_agentd.conf
+    wget -c $custom_files_repository/service_monitoring_via_systemctl.conf -O /etc/zabbix/conf/zabbix_agentd/service_monitoring_via_systemctl.conf
     
     systemctl restart zabbix-agent.service
 
 }
+
+
 case $pkg_mngr in
     apt-get)
         apt_pkg_installer
