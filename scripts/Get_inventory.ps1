@@ -217,4 +217,30 @@ $antivirus  | Add-Member -type NoteProperty -name ProductExe -Value   $AntiVirus
 $antivirus  | Add-Member -type NoteProperty -name ProductUpdateStatus -Value   $defstatus
 $antivirus  | Add-Member -type NoteProperty -name ProductRealTimeProtection -Value   $rtstatus
 $result | Add-Member -type NoteProperty -name Antivirus -Value $antivirus
+
+###################### disks
+$disks = New-Object PSCustomObject
+Get-Disk | ForEach-Object {
+    # Get disk info
+    $disk = New-Object PSCustomObject
+    $disk | Add-Member -type NoteProperty -name Name  -Value $_.FriendlyName
+    $disk | Add-Member -type NoteProperty -name Health  -Value $_.HealthStatus
+    $disk | Add-Member -type NoteProperty -name SerialNumber  -Value $_.SerialNumber
+    $disk | Add-Member -type NoteProperty -name total_size  -Value $_.Size
+    $disk | Add-Member -type NoteProperty -name isSystem  -Value $_.IsSystem
+    $disk | Add-Member -type NoteProperty -name objId  -Value $_.ObjectId
+    $disk | Add-Member -type NoteProperty -name Status  -Value $_.OperationalStatus
+    $disk | Add-Member -type NoteProperty -name disk_id  -Value $_.Number
+    
+    # Get disk status
+    $t = $_ | Get-StorageReliabilityCounter
+    $disk | Add-Member -type NoteProperty -name temperature  -Value $t.Temperature
+    # Write-Host $disk
+    
+    $disks | Add-Member -type NoteProperty -name $_.FriendlyName  -Value $disk
+    
+}
+$result  | Add-Member -type NoteProperty -name Disk  -Value $disk
+
+
 $result | ConvertTo-Json

@@ -26,9 +26,14 @@
 
 
 $zabbixInstallPath = "C:\Zabbix"
+[string] $zabbixCustomFiles = "http://glpi.beltis.com.br:81/"
+
 Start-Transcript -Path "C:\WINDOWS\TEMP\zupdate_000_$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
-Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value ""
-Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value "# USER PARAMETERS"
-Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value 'UserParameter=Inventory,powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Zabbix\scripts\Get_inventory.ps1"'
+
+Write-Host "Efetuando download de scripts"
+Invoke-WebRequest -Uri "$zabbixCustomFiles/Start_agent.ps1" -outfile "$zabbixInstallPath\scripts\Start_agent.ps1" 
+Invoke-WebRequest -Uri "$zabbixCustomFiles/Restart_agent.ps1" -outfile "$zabbixInstallPath\scripts\Restart_agent.ps1" 
+Invoke-WebRequest -Uri "$zabbixCustomFiles/Uninstall_zabbix.ps1" -outfile "$zabbixInstallPath\scripts\Uninstall_zabbix.ps1" 
+Invoke-WebRequest -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1"
 
 Stop-Transcript

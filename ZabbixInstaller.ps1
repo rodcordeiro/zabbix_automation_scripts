@@ -91,9 +91,9 @@ if ($Powershell_version.Version.Major -eq 5){
       Invoke-WebRequest -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1"
       
       Write-Host "Efetuando o download de template de configuração"
-      $config = Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf" Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf"
-      
+      $config = Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf"
       New-Item -ItemType File -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value $config.Content.Replace("LISTEN_PORT",$ListenPort)
+      
       FirewallRules
 
       Write-Host "Instalando o agente"
