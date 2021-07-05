@@ -15,9 +15,6 @@ function Get-LatestUpdate {
 function Test-PendingReboot {
     if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) { return $True }
     if (Get-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired" -EA Ignore) { return $True }
-    # PendingFileRenameOperations also one of the signal for need reboot, but it often false signal
-    # if (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager" -Name PendingFileRenameOperations -EA Ignore) { return $true }
-
     return $False
 }
 
@@ -192,13 +189,6 @@ $result | Add-Member -type NoteProperty -name FirewallStatus -Value   $firewall_
 
 
 ###################### network
-#$mac_addresses = ""
-#Get-WmiObject win32_networkadapterconfiguration | select description, macaddress| % { $mac_addresses = $mac_addresses + $_.description + ":" + $_.macaddress + ";" }
-#$gateways = ""
-#Get-NetIPConfiguration |  Foreach IPv4DefaultGateway | % { $gateways = $gateways + $_.NextHop + "," + $_.DestinationPrefix + "," + $_.RouteMetric + "," + $_.ifIndex + ";"  }
-#$ips = ""
-#Get-NetIPConfiguration |  Foreach IPv4Address | % { $ips = $ips + $_.IPAddress + ";"  }
-
 $nwINFO = Get-WmiObject  Win32_NetworkAdapterConfiguration | Where-Object { $_.IPAddress -ne $null } | Select-Object IPAddress, IpSubnet, DefaultIPGateway, MACAddress, DNSServerSearchOrder
 $result | Add-Member -type NoteProperty -name Networks -Value $nwINFO 
 

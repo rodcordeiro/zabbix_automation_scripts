@@ -1,41 +1,54 @@
+param ( [int] $port, [switch] $help)
+
 <#
 .SYNOPSIS
 	Automated installation of zabbix agent
 .DESCRIPTION
-  This script provides automate installation and configuration of zabbix agent, also downloads incrementals scripts.
-.PARAMETER <zabbixInstallPath>
-	Type of action: dsicover, get or other
-.PARAMETER <Key>
-	Key - attirbute for 	
-.PARAMETER <Value>
-	Value - var for key, may be single or multiply
-.INPUTS
-  Input 3 variables
-.OUTPUTS
-  Output in JSON format for Zabbix 
+  This script provides automated installation and configuration of zabbix agent, also downloads incrementals scripts and configurations defined for Beltis automation.
+.PARAMETER <port>
+	Determina uma porta padrão diferente para o agente.
 .NOTES
   Version:        1.0
-  Author:         p.kuznetsov@itmicus.ru
-  Creation Date:  07/05/2018
-  Purpose/Change: Initial script development
-  
+  Author:         rodrigomendoncca@gmail.com
+  Creation Date:  01/05/2021
+  Purpose/Change: Automated Zabbix installation
 .EXAMPLE
-  ZabbixInstaller.ps1
+  .\ZabbixInstaller.ps1 -port 10050
+  .\ZabbixInstaller.ps1 -port 10072
 #>
 
 
 
-$zabbixInstallPath = "C:\Zabbix"
-$zabbixAgentURL = "https://cdn.zabbix.com/zabbix/binaries/stable/5.0/5.0.11/zabbix_agent-5.0.11-windows-amd64-openssl.zip"
-$zabbixCustomFiles = "LOCAL_OF_YOUR_CONF_FILE"
-$AtualVersion = "5.0.11"
-$FirewallPort = "10070-10071" #Remember to set agent and server ports here
+[string] $zabbixInstallPath = "C:\Zabbix"
+[string] $zabbixAgentURL = "https://cdn.zabbix.com/zabbix/binaries/stable/5.0/5.0.11/zabbix_agent-5.0.11-windows-amd64-openssl.zip"
+[string] $zabbixCustomFiles = "http://glpi.beltis.com.br:81/"
+[string] $AtualVersion = "5.0.11"
+[int] $ServerPort = 10071
+
+$Powershell_version = Get-Host
+
+if (!$port){
+  $ListenPort = 10070
+} else {
+  $ListenPort = $port
+}
+
+if($help){
+  Write-Host "This script provides automated installation and configuration of zabbix agent, also downloads incrementals scripts and configurations defined for Beltis automation."
+  Write-Host "-port: permite alteracao da porta padrao"
+  exit
+}
+
 
 #start logging to log file
-Start-Transcript -Path "C:\WINDOWS\TEMP\Zabbix-$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
+Start-Transcript -Path ".\Zabbix-$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
 
-#Remove previous firewallRule and creates new with validated properties
+
 function FirewallRules{
+<#
+.DESCRIPTION
+Cria as regras de firewall para o Zabbix, permitindo as conexões entrada e saída nas portas especificadas.
+#>
     $rules = Get-NetFirewallRule -DisplayName "Zabbix"
     if($rules){
         Write-Host "Removing existing Firewall rules for update."
@@ -44,64 +57,79 @@ function FirewallRules{
         }
     }
     Write-Host "Creating new Firewall rules"
-    New-NetFirewallRule -DisplayName "Zabbix" -Description "Zabbix Inbound firewall rules" -Direction Inbound -Action Allow -LocalPort $FirewallPort -Protocol TCP -Enabled True
-    New-NetFirewallRule -DisplayName "Zabbix" -Description "Zabbix Outbound firewall rules" -Direction Outbound -Action Allow -LocalPort $FirewallPort -Protocol TCP -Enabled True
+    New-NetFirewallRule -DisplayName "Zabbix" -Description "Zabbix Inbound firewall rules" -Direction Inbound -Action Allow -LocalPort $ListenPort -Protocol TCP -Enabled True
+    New-NetFirewallRule -DisplayName "Zabbix" -Description "Zabbix Outbound firewall rules" -Direction Outbound -Action Allow -LocalPort $ServerPort -Protocol TCP -Enabled True
     
 }
 
 function DownloadAgent{
+    Write-Host "Efetuando o download do agente"
     Invoke-WebRequest -Uri $zabbixAgentURL -outfile "$zabbixInstallPath\zabbix.zip"
     Expand-Archive "$zabbixInstallPath\zabbix.zip" -DestinationPath $zabbixInstallPath
 }
 
-#create agent directory if it doesn't exists
-if (!(Test-Path -Path $zabbixInstallPath))
-{
-    New-Item $zabbixInstallPath -ItemType Directory
+if ($Powershell_version.Version.Major -eq 5){
     
-    DownloadAgent
-    
-    New-Item "$zabbixInstallPath\scripts\" -ItemType Directory
-    New-Item "$zabbixInstallPath\zabbix_agentd.conf.d\" -ItemType Directory
+  #create agent directory if it doesn't exists
+  if (!(Test-Path -Path $zabbixInstallPath))
+  {
+      Write-Host "Criando pasta Zabbix"
+      New-Item $zabbixInstallPath -ItemType Directory
+      
+      DownloadAgent
+      
+      Write-Host "Criando pasta de scripts"
+      New-Item "$zabbixInstallPath\scripts\" -ItemType Directory
+      
+      Write-Host "Criando pasta de configurações adicionais"
+      New-Item "$zabbixInstallPath\zabbix_agentd.conf.d\" -ItemType Directory
 
-    Invoke-WebRequest -Uri "$zabbixCustomFiles/Start_agent.ps1" -outfile "$zabbixInstallPath\scripts\Start_agent.ps1" 
-    Invoke-WebRequest -Uri "$zabbixCustomFiles/Restart_agent.ps1" -outfile "$zabbixInstallPath\scripts\Restart_agent.ps1" 
-    Invoke-WebRequest -Uri "$zabbixCustomFiles/Uninstall_zabbix.ps1" -outfile "$zabbixInstallPath\scripts\Uninstall_zabbix.ps1" 
-    Invoke-WebRequest -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1" 
-    
-    Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf" -outfile "$zabbixInstallPath\conf\zabbix_agentd.conf"
-    
-    FirewallRules
+      Write-Host "Efetuando download de scripts"
+      Invoke-WebRequest -Uri "$zabbixCustomFiles/Start_agent.ps1" -outfile "$zabbixInstallPath\scripts\Start_agent.ps1" 
+      Invoke-WebRequest -Uri "$zabbixCustomFiles/Restart_agent.ps1" -outfile "$zabbixInstallPath\scripts\Restart_agent.ps1" 
+      Invoke-WebRequest -Uri "$zabbixCustomFiles/Uninstall_zabbix.ps1" -outfile "$zabbixInstallPath\scripts\Uninstall_zabbix.ps1" 
+      Invoke-WebRequest -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1"
+      
+      Write-Host "Efetuando o download de template de configuração"
+      $config = Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf" Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf"
+      
+      New-Item -ItemType File -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value $config.Content.Replace("LISTEN_PORT",$ListenPort)
+      FirewallRules
 
-    Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -i" -NoNewWindow
-    Start-Sleep -Seconds 2
-    Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -s" -NoNewWindow    
+      Write-Host "Instalando o agente"
+      Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -i" -NoNewWindow
+      Start-Sleep -Seconds 2
+      Write-Host "Iniciando o agente"
+      Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -s" -NoNewWindow    
 
-    Remove-Item "$zabbixInstallPath\zabbix.zip"
-}
-else
-{
-    $Version = (Get-Item "$zabbixInstallPath\bin\zabbix_agentd.exe").VersionInfo.FileVersion
-    if($Version.StartsWith($AtualVersion)){
-        Write-Host "Zabbix Agent already installed with the latest version"
-    } else {
-        Write-Host "Zabbix Agent already installed but found a new version. Start updating."
-        
-        Start-Process "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -x"
-        Start-Sleep -Seconds 2
-        Start-Process "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "--uninstall"
-        Start-Sleep -Seconds 2
-        
-        Remove-Item "$zabbixInstallPath\bin" -Recurse -Force
+      Remove-Item "$zabbixInstallPath\zabbix.zip"
+  }
+  else
+  {
+      $Version = (Get-Item "$zabbixInstallPath\bin\zabbix_agentd.exe").VersionInfo.FileVersion
+      if($Version.StartsWith($AtualVersion)){
+          Write-Host "Zabbix Agent already installed with the latest version"
+      } else {
+          Write-Host "Zabbix Agent already installed but found a new version. Start updating."
+          
+          Start-Process "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -x"
+          Start-Sleep -Seconds 2
+          Start-Process "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "--uninstall"
+          Start-Sleep -Seconds 2
+          
+          Remove-Item "$zabbixInstallPath\bin" -Recurse -Force
 
-        DownloadAgent
-        FirewallRules
+          DownloadAgent
+          FirewallRules
 
-        Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -i" -NoNewWindow
-        Start-Sleep -Seconds 2
-        Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -s" -NoNewWindow    
+          Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -i" -NoNewWindow
+          Start-Sleep -Seconds 2
+          Start-Process -FilePath "$zabbixInstallPath\bin\zabbix_agentd.exe" -ArgumentList "-c $zabbixInstallPath\conf\zabbix_agentd.conf -s" -NoNewWindow    
 
-        Remove-Item "$zabbixInstallPath\zabbix.zip"
-    }
+          Remove-Item "$zabbixInstallPath\zabbix.zip"
+      }
+  }
+} else {
+  Write-Host "Por favor, atualize o powershell para a versão 5.1 ou superior para garantir o funcionamento de todas as funcionalidades Zabbix"
 }
 Stop-Transcript

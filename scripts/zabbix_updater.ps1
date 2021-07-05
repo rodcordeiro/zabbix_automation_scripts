@@ -27,7 +27,6 @@
 
 $zabbixInstallPath = "C:\Zabbix"
 Start-Transcript -Path "C:\WINDOWS\TEMP\zupdate_000_$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
-
 Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value ""
 Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value "# USER PARAMETERS"
 Add-Content -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value 'UserParameter=Inventory,powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Zabbix\scripts\Get_inventory.ps1"'
