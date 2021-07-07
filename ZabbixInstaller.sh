@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 
-custom_files_repository="https://rodcordeiro.github.io/shares/files/zabbix"
+##### Variables
+ListenPort=10070
+custom_files_repository="http://glpi.beltis.com.br:81/"
+
+##### Reference
+# https://linuxhint.com/replace_string_in_file_bash/
+# sed -i "s/$search/$replace/gi" $1
+
+##### Parsing Arguments
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --port=*)
+      ListenPort="${1#*=}"
+      ;;
+    *)
+      printf "***************************\n"
+      printf "* Error: Invalid argument.*\n"
+      printf "***************************\n"
+      exit 1
+  esac
+  shift
+done
 
 
-# Identificar gerenciador de pacotes
+##### Identificar gerenciador de pacotes
 declare -A osInfo;
 osInfo[/etc/redhat-release]=yum
 osInfo[/etc/arch-release]=pacman
@@ -14,7 +35,6 @@ osInfo[/etc/debian_version]=apt-get
 for f in ${!osInfo[@]}
 do
     if [[ -f $f ]];then
-        # echo Package manager: ${osInfo[$f]}
         pkg_mngr=${osInfo[$f]}
     fi
 done
@@ -39,7 +59,7 @@ apt_pkg_installer(){
     cd /tmp
     mkdir /tmp/zabbix_temp
     wget -c https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb -O /tmp/zabbix_temp/zabbix_release.deb
-    dpkg -i zabbix*.deb
+    dpkg -i /tmp/zabbix_temp/zabbix_release.deb
     apt-get update -y
 
     apt-get install zabbix-agent -y
@@ -71,12 +91,12 @@ zypper_pkg_installer(){
 
 }
 
-
+##### Run installer function based on package manager
 case $pkg_mngr in
     apt-get)
         apt_pkg_installer
     ;;
-    dnf)
+    dnf|yum)
         dnf_pkg_installer
     ;;
     zypper)
