@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sed -i "s/ZBX_WIN_LOCAL_PATH/C:\\Zabbix/gi" $1
+
 ls=$(ls --hide=index.sh)
 
 page="""<!DOCTYPE html>
