@@ -19,7 +19,7 @@ param ( [int] $port, [switch] $help)
 
 
 
-[string] $zabbixInstallPath = "C:\Zabbix"
+[string] $zabbixInstallPath = "ZBX_WIN_LOCAL_PATH"
 [string] $zabbixAgentURL = "https://cdn.zabbix.com/zabbix/binaries/stable/5.0/5.0.11/zabbix_agent-5.0.11-windows-amd64-openssl.zip"
 [string] $zabbixCustomFiles = "http://glpi.beltis.com.br:81/"
 [string] $AtualVersion = "5.0.11"

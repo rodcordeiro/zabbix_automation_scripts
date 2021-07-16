@@ -19,7 +19,7 @@
 
 
 
-$zabbixInstallPath = "C:\Zabbix"
+$zabbixInstallPath = "ZBX_WIN_LOCAL_PATH"
 [string] $zabbixCustomFiles = "http://bmonit.beltis.com.br:81/"
 
 Start-Transcript -Path "C:\WINDOWS\TEMP\zupdate_000_$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
