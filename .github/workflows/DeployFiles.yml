@@ -22,4 +22,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           source: "configs/*"
-          target: "${{ secrets.SSH_KEY }}/"
+          target: "${{ secrets.TARGET }}/"
