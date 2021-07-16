@@ -1,0 +1,25 @@
+name: Deploy files to Zabbix server
+
+on:
+  push:
+    branches: [ gh-action ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 3 * * 1'
+
+jobs:
+  Deploy to server:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: copy file via ssh key
+    uses: appleboy/scp-action@master
+    with:
+      host: ${{ secrets.HOST }}
+      username: ${{ secrets.SSH_USERNAME }}
+      port: ${{ secrets.SSH_PORT }}
+      key: ${{ secrets.SSH_KEY }}
+      source: "configs/*"
+      target: "${{ secrets.SSH_KEY }}/"

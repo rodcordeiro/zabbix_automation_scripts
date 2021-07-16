@@ -3,14 +3,8 @@
 	Automated installation of zabbix agent
 .DESCRIPTION
   This script provides automate installation and configuration of zabbix agent, also downloads incrementals scripts.
-.PARAMETER <zabbixInstallPath>
-	Type of action: dsicover, get or other
-.PARAMETER <Key>
-	Key - attirbute for 	
-.PARAMETER <Value>
-	Value - var for key, may be single or multiply
 .INPUTS
-  Input 3 variables
+  No inputs is needed
 .OUTPUTS
   Output in JSON format for Zabbix 
 .NOTES
@@ -20,13 +14,13 @@
   Purpose/Change: Initial script development
   
 .EXAMPLE
-  ZabbixInstaller.ps1
+  PS> .\ZabbixInstaller.ps1
 #>
 
 
 
 $zabbixInstallPath = "C:\Zabbix"
-[string] $zabbixCustomFiles = "http://glpi.beltis.com.br:81/"
+[string] $zabbixCustomFiles = "http://bmonit.beltis.com.br:81/"
 
 Start-Transcript -Path "C:\WINDOWS\TEMP\zupdate_000_$Env:COMPUTERNAME.log" -Append -NoClobber -IncludeInvocationHeader
 
