@@ -24,6 +24,8 @@ param ( [int] $port, [switch] $help)
 [string] $zabbixCustomFiles = "http://glpi.beltis.com.br:81/"
 [string] $AtualVersion = "5.0.11"
 [int] $ServerPort = 10071
+$proxy = ([System.Net.WebRequest]::GetSystemWebproxy()).GetProxy($zabbixCustomFiles)
+
 
 $Powershell_version = Get-Host
 
@@ -85,12 +87,13 @@ if ($Powershell_version.Version.Major -eq 5){
       New-Item "$zabbixInstallPath\zabbix_agentd.conf.d\" -ItemType Directory
 
       Write-Host "Efetuando download de scripts"
-      Invoke-WebRequest -Uri "$zabbixCustomFiles/Start_agent.ps1" -outfile "$zabbixInstallPath\scripts\Start_agent.ps1" 
-      Invoke-WebRequest -Uri "$zabbixCustomFiles/Restart_agent.ps1" -outfile "$zabbixInstallPath\scripts\Restart_agent.ps1" 
-      Invoke-WebRequest -Uri "$zabbixCustomFiles/Uninstall_zabbix.ps1" -outfile "$zabbixInstallPath\scripts\Uninstall_zabbix.ps1" 
-      Invoke-WebRequest -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1"
+      Invoke-WebRequest -Proxy $proxy -ProxyUseDefaultCredentials -Uri "$zabbixCustomFiles/Start_agent.ps1" -outfile "$zabbixInstallPath\scripts\Start_agent.ps1" 
+      Invoke-WebRequest -Proxy $proxy -ProxyUseDefaultCredentials  -Uri "$zabbixCustomFiles/Restart_agent.ps1" -outfile "$zabbixInstallPath\scripts\Restart_agent.ps1" 
+      Invoke-WebRequest -Proxy $proxy -ProxyUseDefaultCredentials  -Uri "$zabbixCustomFiles/Uninstall_zabbix.ps1" -outfile "$zabbixInstallPath\scripts\Uninstall_zabbix.ps1" 
+      Invoke-WebRequest -Proxy $proxy -ProxyUseDefaultCredentials  -Uri "$zabbixCustomFiles/Get_inventory.ps1" -outfile "$zabbixInstallPath\scripts\Get_inventory.ps1"
       
       Write-Host "Efetuando o download de template de configuração"
+      Remove-Item "$zabbixInstallPath\conf\zabbix_agentd.conf"
       $config = Invoke-WebRequest -Uri "$zabbixCustomFiles/zabbix_agentd.win.conf"
       New-Item -ItemType File -Path "$zabbixInstallPath\conf\zabbix_agentd.conf" -Value $config.Content.Replace("LISTEN_PORT",$ListenPort)
       
