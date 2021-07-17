@@ -33,6 +33,7 @@ jobs:
         with:
           find: "ZBX_WIN"
           replace: "C:\\Zabbix"
+          include: "index.sh"
   Deploy_files:
     name: Update files
     runs-on: ubuntu-latest
