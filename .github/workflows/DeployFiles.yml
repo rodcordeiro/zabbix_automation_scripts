@@ -22,23 +22,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           source: "*,!.git*,!.env*,!Dockerfile,!docker-compose.yml"
-          target: "${{ secrets.TARGET }}"
-   steps:
-      - name: Wait for build to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        id: wait-for-build
-        with:
-          token: ${{ secrets.TOKEN }}
-          checkName: build
-          ref: ${{ github.event.pull_requ=-est.head.sha || github.sha }}
-
-      - name: Do something with a passing build
-        if: steps.wait-for-build.outputs.conclusion == 'success'
-        run: Deploy_files
-
-      - name: Do something with a failing build
-        if: steps.wait-for-build.outputs.conclusion == 'failure'
-
+          target: "/var/www/html"
   Deploy_files:
     name: Update files
     runs-on: ubuntu-latest
