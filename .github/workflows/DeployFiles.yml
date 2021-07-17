@@ -22,16 +22,13 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           source: "*,!.git*,!.env*,!Dockerfile,!docker-compose.yml"
-          target: "${{ secrets.TARGET }}/"
-  Prepare_server:
-    name: Update Variables
-    runs-on: ubuntu-latest
+          target: /var/www/html/
     steps:
-    - name: executing remote ssh commands using password
+    - name: Execute commands
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
         port: ${{ secrets.SSH_PORT }}
-        script: ${{ secrets.TARGET }}/index.sh
+        script: /var/www/html/index.sh
