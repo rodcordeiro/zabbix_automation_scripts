@@ -2,7 +2,7 @@
 
 ##### Variables
 ListenPort=10070
-custom_files_repository="http://glpi.beltis.com.br:81/"
+custom_files_repository="ZBX_SERVER"
 
 ##### Reference
 # https://linuxhint.com/replace_string_in_file_bash/
