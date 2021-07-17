@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           source: "*,!.git*,!.env*,!Dockerfile,!docker-compose.yml"
-          target: /var/www/html
+          target: "${{ secrets.TARGET }}"
    steps:
       - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
