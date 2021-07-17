@@ -15,7 +15,7 @@ folder_handler(){
         if [ -d $file ]; then
             folder_handler "$1/$file"
         else
-            replace()
+            replace $file
             page+="<a href='$file' download='$file' style='margin-left:10px;background-color: #f0f0f0; border: 1px solid #f4f4f4'>$1/$file</a><br/>"
         fi
     done
@@ -37,10 +37,10 @@ for file in ${files}; do
     path=$(pwd)
     folder_handler "$file"
  elif [ -f $file ]; then
-    replace()
+    replace $file
     page+="<a href='$file' download='$file' style='background-color: #f0f0f0; border: 1px solid #f4f4f4'>$file</a><br/>"
  else
-    replace()
+    replace $file
     page+="<a href='$file' download='$file' style='background-color: #f0f0f0; border: 1px solid #f4f4f4'>$file</a><br/>"
  fi
 done
