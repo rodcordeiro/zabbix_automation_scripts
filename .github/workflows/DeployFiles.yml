@@ -22,18 +22,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           source: "*,!.git*,!.env*,!Dockerfile,!docker-compose.yml"
-          target: /var/www/html/
-  Prepare_deployment:
-    name: Prepare script
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "ZBX_WIN"
-          replace: "C:\\Zabbix"
-          include: "index.sh"
+          target: ${{ secrets.TARGET }}
   Deploy_files:
     name: Update files
     runs-on: ubuntu-latest
@@ -45,4 +34,4 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}
         port: ${{ secrets.SSH_PORT }}
-        script: /var/www/html/index.sh
+        script: /var/www/html/update_zabbix_files.sh
