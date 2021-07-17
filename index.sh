@@ -3,7 +3,7 @@
 files=$(ls --hide=index.sh)
 
 replace(){
-    sed -i "s/ZBX_WIN_LOCAL_PATH/C:\\Zabbix/gi" $1
+    sed -i "s/ZBX_WIN_LOCAL_PATH/ZBX_WIN/gi" $1
     sed -i 's/ZBX_SERVER/http\:\/\/bmonit.beltis.com.br\:81\//gi' $1
 }
 
