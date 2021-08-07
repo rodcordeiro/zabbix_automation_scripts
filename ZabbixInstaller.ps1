@@ -1,4 +1,34 @@
-param ( [int] $port, [switch] $help)
+
+<#PSScriptInfo
+
+.VERSION 1.0
+
+.GUID 642fb815-2544-4326-be1f-58ab2fdb54c1
+
+.AUTHOR Rodrigo Cordeiro
+
+.COMPANYNAME Beltis TI
+
+.COPYRIGHT 
+
+.TAGS 
+
+.LICENSEURI 
+
+.PROJECTURI https://www.beltis.com.br/
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+Install zabbix. Supports custom port configuration.
+
+#>
 
 <#
 .SYNOPSIS
@@ -12,10 +42,22 @@ param ( [int] $port, [switch] $help)
   Author:         rodrigomendoncca@gmail.com
   Creation Date:  01/05/2021
   Purpose/Change: Automated Zabbix installation
+
+.INPUTS
+    Não há input necessário para a execução do script
+.OUTPUTS
+    São exportados os logs de execução das tarefas
 .EXAMPLE
   .\ZabbixInstaller.ps1 -port 10050
+.EXAMPLE
   .\ZabbixInstaller.ps1 -port 10072
+.EXAMPLE
+  .\ZabbixInstaller.ps1
 #>
+
+param ( [int] $port, [switch] $help)
+
+
 
 
 
@@ -36,8 +78,8 @@ if (!$port){
 }
 
 if($help){
-  Write-Host "This script provides automated installation and configuration of zabbix agent, also downloads incrementals scripts and configurations defined for Beltis automation."
-  Write-Host "-port: permite alteracao da porta padrao"
+  $script_file = Resolve-Path -Path ".\ZabbixInstaller.ps1"
+  Get-Help $script_file.Path
   exit
 }
 
