@@ -1,4 +1,34 @@
-param ( [int] $port, [switch] $help)
+
+<#PSScriptInfo
+
+.VERSION 1.0
+
+.GUID 642fb815-2544-4326-be1f-58ab2fdb54c1
+
+.AUTHOR Rodrigo Cordeiro
+
+.COMPANYNAME Beltis TI
+
+.COPYRIGHT 
+
+.TAGS 
+
+.LICENSEURI 
+
+.PROJECTURI https://www.beltis.com.br/
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+Install zabbix. Supports custom port configuration.
+
+#>
 
 <#
 .SYNOPSIS
@@ -12,10 +42,22 @@ param ( [int] $port, [switch] $help)
   Author:         rodrigomendoncca@gmail.com
   Creation Date:  01/05/2021
   Purpose/Change: Automated Zabbix installation
+
+.INPUTS
+    Não há input necessário para a execução do script
+.OUTPUTS
+    São exportados os logs de execução das tarefas
 .EXAMPLE
   .\ZabbixInstaller.ps1 -port 10050
+.EXAMPLE
   .\ZabbixInstaller.ps1 -port 10072
+.EXAMPLE
+  .\ZabbixInstaller.ps1
 #>
+
+param ( [int] $port, [switch] $help)
+
+
 
 
 
@@ -36,8 +78,8 @@ if (!$port){
 }
 
 if($help){
-  Write-Host "This script provides automated installation and configuration of zabbix agent, also downloads incrementals scripts and configurations defined for Beltis automation."
-  Write-Host "-port: permite alteracao da porta padrao"
+  $script_file = Resolve-Path -Path ".\ZabbixInstaller.ps1"
+  Get-Help $script_file.Path
   exit
 }
 
@@ -136,3 +178,37 @@ if ($Powershell_version.Version.Major -eq 5){
   Write-Host "Por favor, atualize o powershell para a versão 5.1 ou superior para garantir o funcionamento de todas as funcionalidades Zabbix"
 }
 Stop-Transcript
+
+# SIG # Begin signature block
+# MIIFxwYJKoZIhvcNAQcCoIIFuDCCBbQCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUqUZWXvVoyE+OdvAj97OneUU4
+# uLGgggNEMIIDQDCCAiigAwIBAgIQFbxZumfld41MyhiLRz4MmDANBgkqhkiG9w0B
+# AQsFADA4MTYwNAYDVQQDDC1Sb2RyaWdvIENvcmRlaXJvIDxyb2RyaWdvbWVuZG9u
+# Y2NhQGdtYWlsLmNvbT4wHhcNMjEwODA2MjAwNTIzWhcNMjIwODA2MjAyNTIyWjAn
+# MSUwIwYDVQQDDBxSb2RyaWdvIENvcmRlaXJvIHwgQmVsdGlzIFRJMIIBIjANBgkq
+# hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn/gVxAhY8+kqJk5Uc3JDD07s0mLqlZSW
+# ON5ncH8kiJ6XdmcNfv0nIQTcghBTB70lS1wxC/GWA6FRFm6TkwFj4r72YZN5UVzL
+# BSii8dar9rsa9mSLaVdYCzdcbEPJrwt1IhS5hI1Qe87rYArHQw3q+sr2uy8nat+C
+# KlPS8UblcQkdm+JCRUwAiarxmQidcfV7RK3boS5B4cgzjnYJVzzn6VERZqYTPhPd
+# D97Se94M38xobdcWX46jt31snnOvDeh0BASCepUEN0ZDcoOe8pRDowMdx/862G1c
+# hkKe8l20hSlT0zaVqQQbG9yFWcY00akVP9tMHxas2UPkn3IiMe8JXQIDAQABo1cw
+# VTATBgNVHSUEDDAKBggrBgEFBQcDAzAfBgNVHSMEGDAWgBQnTyrsdM3l9TfvnRfy
+# TwkxrJGaMjAdBgNVHQ4EFgQUFNNPU7+Az+iJkPSna45FxuoLSO0wDQYJKoZIhvcN
+# AQELBQADggEBAGyYAKOZykhn208UgaGkxA5Dd8zdp0nGit96vhmWUvR2Gz0zB+D/
+# ydGxMkjUS4LoIz81aBydfCBwunpsO/n/3OEW/4YDJoMLNmH//CEHeNMhZ/1cUefJ
+# YWSAjTY4BT+zPT8+ad22pa3C6Ciiv5+ySTnfvunVvIbN0CEJTzCqv5tEaKdvo7SG
+# YU1wLuOJwMbA1B/XmdWJwrqKD+3KCzKDmuWNQBjf9q1fv0hGKOketKV92RLDpYPw
+# F6lQz1JkDM2Mk0q0uwr1RJK3i+lNmY7t0npghX1pCcl4M0Ug25rDK/u5o2XePWdO
+# ExKDq4h+bd/ldlhgTNEc5DnmHbwz4lWbUAQxggHtMIIB6QIBATBMMDgxNjA0BgNV
+# BAMMLVJvZHJpZ28gQ29yZGVpcm8gPHJvZHJpZ29tZW5kb25jY2FAZ21haWwuY29t
+# PgIQFbxZumfld41MyhiLRz4MmDAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEK
+# MAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3
+# AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUztPGfUCpTuqOyVwG
+# pZ6JuXqA7EEwDQYJKoZIhvcNAQEBBQAEggEATqnQHH20jXzEXMJTUyyBhgO3is4o
+# kO8k19vhNHrWYiGaErNKmPZ1Y/cGSI122MvM441N00pFqTczdPyi2OD8jsIcfINa
+# Wj9ZK/YcjsccUqgae0STNJip09J5lEhIU4dNfA/llbopWh+8sGfNEpkFaEPAltDm
+# XMAYoGDEBtzbK47gymAEU5CF54HrDrjSQA6MjzHIaz3fNVrOKFMqHFRBtduTp+Tf
+# O+TG2qNa2P5sG5AjOsYtNlcdyJPrLOunrOnwDfiCGwRqol8rIaKElC9INusCLLE/
+# +NR3tkrDrwLmy3NmqySlyVCbBkpvKHeV/Y91wwuu1tUwBFCDd7TClvVVUA==
+# SIG # End signature block
