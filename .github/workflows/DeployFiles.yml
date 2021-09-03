@@ -2,12 +2,10 @@ name: Deploy files to Zabbix server
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
-  schedule:
-    - cron: '0 3 * * 1'
-
+    branches: [ main ]
+  
 jobs:
   Deploy_to_server:
     name: Deploy
