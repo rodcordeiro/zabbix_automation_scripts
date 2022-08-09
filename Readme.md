@@ -7,3 +7,10 @@
 ## templates
 - [Service Monitoring via systemctl on Linux](templates#service-monitoring-via-systemctl-on-linux)
 - [Monitoring Hyper-V](templates#monitoring-hyper-v)
+
+
+<!--
+https://github.com/Azure-Samples/azure-zabbix-templates
+https://www.zabbix.com/br/manuals/azure_deployment_guide
+https://blog.zabbix.com/handy-tips-21-deploying-zabbix-server-with-docker-containers/18972/
+-->
