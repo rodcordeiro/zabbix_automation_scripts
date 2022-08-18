@@ -27,3 +27,4 @@ Timeout=10
 7. All triggers you may change through user macros in host
 
 > Reference [https://github.com/itmicus/zabbix/tree/master/Template%20Microsoft%20Hyper-V](https://github.com/itmicus/zabbix/tree/master/Template%20Microsoft%20Hyper-V)
+
